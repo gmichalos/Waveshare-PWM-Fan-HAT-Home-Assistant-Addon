@@ -87,17 +87,13 @@ class PwmFanHat:
         draw.rectangle((0, 0, 128, 32), fill=1)
         
         if display_mode == "ip_address":
-            # Display IP Address mode with fan percentage
+            # Display IP Address mode
+            # Row 1: Temp(C): xx.xC
+            # Row 2: Fan: xx% IP: xxx.xxx.xxx.xxx
             ip = PwmFanHat.get_ip()
-            hostname = socket.gethostname()
             
-            # Truncate hostname if too long
-            if len(hostname) > 21:
-                hostname = hostname[:21]
-            
-            draw.text((0, 0), hostname, font=font, fill=0)
-            draw.text((0, 11), f"IP:{ip}", font=font, fill=0)
-            draw.text((0, 22), f"{temp:.1f}C Fan:{speed}%", font=font, fill=0)
+            draw.text((0, 0), f"Temp(C): {temp:.1f}C", font=font, fill=0)
+            draw.text((0, 16), f"Fan:{speed}% IP:{ip}", font=font, fill=0)
         else:
             # Display fan status mode (original behavior)
             draw.text((0, 0), "Temp(C):", font=font, fill=0)
