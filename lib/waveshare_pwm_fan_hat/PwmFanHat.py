@@ -74,21 +74,37 @@ class PwmFanHat:
         return temp, speed
 
     @staticmethod
-    def update_oled(temp, speed, rotate_oled):
+    def update_oled(temp, speed, rotate_oled, display_mode="fan_status"):
         """
-        Updates the OLED display with the current temperature and fan status.
+        Updates the OLED display with the current temperature and fan status or IP address.
 
         Args:
             temp (float): The current temperature in Celsius.
             speed (int): The current fan speed percentage.
             rotate_oled (bool): Whether to rotate the OLED display.
+            display_mode (str): Display mode - 'fan_status' or 'ip_address'.
         """
         draw.rectangle((0, 0, 128, 32), fill=1)
-        draw.text((0, 0), "Temp(C):", font=font, fill=0)
-        draw.text((70, 0), str(temp), font=font, fill=0)
-        draw.text((0, 16), f"Fan: {speed}%", font=font, fill=0)
-        status = "ON" if speed > 0 else "OFF"
-        draw.text((70, 16), f"Status: {status}", font=font, fill=0)
+        
+        if display_mode == "ip_address":
+            # Display IP Address mode with fan percentage
+            ip = PwmFanHat.get_ip()
+            hostname = socket.gethostname()
+            
+            # Truncate hostname if too long
+            if len(hostname) > 21:
+                hostname = hostname[:21]
+            
+            draw.text((0, 0), hostname, font=font, fill=0)
+            draw.text((0, 11), f"IP:{ip}", font=font, fill=0)
+            draw.text((0, 22), f"{temp:.1f}C Fan:{speed}%", font=font, fill=0)
+        else:
+            # Display fan status mode (original behavior)
+            draw.text((0, 0), "Temp(C):", font=font, fill=0)
+            draw.text((70, 0), str(temp), font=font, fill=0)
+            draw.text((0, 16), f"Fan: {speed}%", font=font, fill=0)
+            status = "ON" if speed > 0 else "OFF"
+            draw.text((70, 16), f"Status: {status}", font=font, fill=0)
 
         # Rotate and display the image
         if rotate_oled:
@@ -96,7 +112,7 @@ class PwmFanHat:
         else:
             oled.ShowImage(oled.getbuffer(image1))
 
-    def update(self, fan_min_temp, fan_max_temp, delta_temp, update_interval, rotate_oled):
+    def update(self, fan_min_temp, fan_max_temp, delta_temp, update_interval, rotate_oled, display_mode="fan_status"):
         """
         Updates the fan speed and OLED display at regular intervals.
 
@@ -106,7 +122,8 @@ class PwmFanHat:
             delta_temp (float): The minimum temperature change to trigger an update.
             update_interval (float): The time interval (in seconds) between updates.
             rotate_oled (bool): Whether to rotate the OLED display.
+            display_mode (str): Display mode - 'fan_status' or 'ip_address'.
         """
         temp, speed = self.update_fan(fan_min_temp, fan_max_temp, delta_temp)
-        self.update_oled(temp, speed, rotate_oled)
+        self.update_oled(temp, speed, rotate_oled, display_mode)
         time.sleep(update_interval)
