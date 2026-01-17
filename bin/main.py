@@ -23,6 +23,7 @@ fan_max_temp = config["fan_max_temp"]
 delta_temp = config["delta_temp"]
 update_interval = config["update_interval"]
 rotate_oled = config["rotate_oled"]
+display_mode = config.get("display_mode", "fan_status")
 options_file.close()
 
 while True:
@@ -32,4 +33,5 @@ while True:
         delta_temp=delta_temp,
         update_interval=update_interval,
         rotate_oled=rotate_oled,
+        display_mode=display_mode,
     )
