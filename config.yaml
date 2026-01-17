@@ -1,6 +1,6 @@
 name: "Waveshare PWM Fan HAT"
 description: "PWM fan and display support for the Waveshare PWM fan HAT."
-version: "0.1.1"
+version: "0.2.0"
 slug: "pwm_fan_hat"
 init: false
 host_network: true
@@ -20,9 +20,11 @@ options:
   delta_temp: 5
   update_interval: 2
   rotate_oled: false
+  display_mode: fan_status
 schema:
   fan_min_temp: int
   fan_max_temp: int
   delta_temp: int
   update_interval: int
   rotate_oled: bool
+  display_mode: list(fan_status|ip_address)
