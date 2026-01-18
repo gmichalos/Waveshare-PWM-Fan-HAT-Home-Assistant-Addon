@@ -1,6 +1,7 @@
 import json
 import os
 import sys
+import time
 
 from PIL import Image, ImageDraw, ImageFont
 
@@ -9,6 +10,20 @@ if os.path.exists(libdir):
     sys.path.append(libdir)
 
 import logging
+
+# Wait for I2C to be ready
+max_retries = 10
+retry_delay = 2
+
+for attempt in range(max_retries):
+    if os.path.exists('/dev/i2c-1') or os.path.exists('/dev/i2c-0'):
+        break
+    if attempt < max_retries - 1:
+        logging.info(f"Waiting for I2C device... (attempt {attempt + 1}/{max_retries})")
+        time.sleep(retry_delay)
+else:
+    logging.error("I2C device not found after waiting. Please ensure I2C is enabled.")
+    sys.exit(1)
 
 from waveshare_pwm_fan_hat import PwmFanHat
 
