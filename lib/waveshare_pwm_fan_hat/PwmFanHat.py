@@ -102,11 +102,12 @@ class PwmFanHat:
         
         if display_mode == "ip_address":
             # Display IP Address mode
-            # Row 1: Temp:XX    Fan:X%
+            # Row 1: Temp:XX (at x=0) and Fan:X% (at x=70)
             # Row 2: IP:xxx.xxx.xxx.xxx
             ip = self.get_cached_ip()
             
-            draw.text((0, 0), f"Temp:{temp:.0f}C    Fan:{speed}%", font=font, fill=0)
+            draw.text((0, 0), f"Temp:{temp:.0f}C", font=font, fill=0)
+            draw.text((70, 0), f"Fan:{speed}%", font=font, fill=0)
             draw.text((0, 16), f"IP:{ip}", font=font, fill=0)
         else:
             # Display fan status mode (original behavior)
