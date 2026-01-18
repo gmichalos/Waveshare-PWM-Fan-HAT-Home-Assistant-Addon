@@ -26,6 +26,9 @@ class PwmFanHat:
     def __init__(self):
         self.last_speed = 0
         self.last_temp = None
+        self.cached_ip = None
+        self.ip_last_update = 0
+        self.ip_cache_duration = 60  # Cache IP for 60 seconds
 
     @staticmethod
     def get_ip():
@@ -34,6 +37,18 @@ class PwmFanHat:
         ip = s.getsockname()[0]
         s.close()
         return ip
+
+    def get_cached_ip(self):
+        """Get IP address with caching to avoid excessive socket connections"""
+        current_time = time.time()
+        if self.cached_ip is None or (current_time - self.ip_last_update) > self.ip_cache_duration:
+            try:
+                self.cached_ip = self.get_ip()
+                self.ip_last_update = current_time
+            except:
+                if self.cached_ip is None:
+                    self.cached_ip = "No IP"
+        return self.cached_ip
 
     @staticmethod
     def get_temp():
@@ -73,8 +88,7 @@ class PwmFanHat:
             speed = self.last_speed
         return temp, speed
 
-    @staticmethod
-    def update_oled(temp, speed, rotate_oled, display_mode="fan_status"):
+    def update_oled(self, temp, speed, rotate_oled, display_mode="fan_status"):
         """
         Updates the OLED display with the current temperature and fan status or IP address.
 
@@ -88,9 +102,9 @@ class PwmFanHat:
         
         if display_mode == "ip_address":
             # Display IP Address mode
-            # Row 1: Temp(C): XX  Fan: X%
-            # Row 2: IP: xxx.xxx.xxx.xxx
-            ip = PwmFanHat.get_ip()
+            # Row 1: Temp:XX Fan:X%
+            # Row 2: IP:xxx.xxx.xxx.xxx
+            ip = self.get_cached_ip()
             
             draw.text((0, 0), f"Temp:{temp:.0f}C Fan:{speed}%", font=font, fill=0)
             draw.text((0, 16), f"IP:{ip}", font=font, fill=0)
