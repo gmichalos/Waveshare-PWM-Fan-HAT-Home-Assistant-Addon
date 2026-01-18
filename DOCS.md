@@ -1,7 +1,23 @@
-# Waveshare FAN-HAT Home-Assistant Addon
+# Waveshare PWM Fan HAT
 
-Specifically for this FAN-HAT: https://www.waveshare.com/wiki/Fan_HAT
+Control your Waveshare PWM Fan HAT with temperature-based fan speed and OLED display.
 
-Home Assistant (HASS) Addon to support Waveshare FAN HAT including fan control and display
+## Quick Start
 
-Important: Enable I2C first to make this work! As described here: https://www.home-assistant.io/common-tasks/os/#enable-i2c
+1. Ensure I2C is enabled
+2. Configure your temperature thresholds
+3. Choose your display mode
+4. Start the addon
+
+## Configuration
+
+See the Configuration tab for all available options.
+
+## Display Modes
+
+- **fan_status**: Shows temperature, fan speed, and ON/OFF status
+- **ip_address**: Shows temperature, fan speed, and IP address
+
+## Need Help?
+
+See the full documentation at: [GitHub Repository](https://github.com/gmichalos/Waveshare-PWM-Fan-HAT-Home-Assistant-Addon)
